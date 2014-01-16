@@ -1,0 +1,78 @@
+/**
+ * Copyright (C) 2014
+ *   Michael Mosmann <michael@mosmann.de>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package de.flapdoodle.apache.pivot.events;
+
+import org.apache.pivot.util.concurrent.Task;
+import org.apache.pivot.util.concurrent.TaskListener;
+import org.apache.pivot.wtk.TaskAdapter;
+
+public abstract class AsyncEvents<T> {
+
+	private AsyncEvents() {
+		// no instance
+	}
+
+	public static <T> AsyncBuilder<T> send(IEventFactory<T> eventFactory) {
+		return new AsyncBuilder<T>(eventFactory);
+	}
+
+	public static class AsyncBuilder<T> {
+
+		private final IEventFactory<T> eventFactory;
+
+		public AsyncBuilder(IEventFactory<T> eventFactory) {
+			this.eventFactory = eventFactory;
+		}
+
+		public TaskSelector<T> to(final IEventSink sink, final EventPropagation propagation) {
+			return new TaskSelector<T>(new TaskAdapter<T>(new TaskListener<T>() {
+
+				@Override
+				public void taskExecuted(Task<T> task) {
+					eventFactory.newInstance(sink, task.getResult()).fire(propagation);
+				}
+
+				@Override
+				public void executeFailed(Task<T> task) {
+					eventFactory.newInstance(sink, task.getFault()).fire(propagation);
+				}
+			}));
+		}
+	}
+
+	public static class TaskSelector<T> {
+
+		private final TaskAdapter<T> taskAdapter;
+
+		public TaskSelector(TaskAdapter<T> taskAdapter) {
+			this.taskAdapter = taskAdapter;
+		}
+
+		public void on(Task<T> task) {
+			task.execute(taskAdapter);
+		}
+
+	}
+
+	public interface IEventFactory<T> {
+
+		Event newInstance(IEventSink sink, T payload);
+
+		Event newInstance(IEventSink sink, Throwable error);
+	}
+
+}
