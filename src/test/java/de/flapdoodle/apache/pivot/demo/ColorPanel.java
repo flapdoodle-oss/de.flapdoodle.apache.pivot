@@ -16,24 +16,28 @@
  */
 package de.flapdoodle.apache.pivot.demo;
 
-import org.apache.pivot.wtk.FillPane;
 import org.apache.pivot.wtk.Panel;
 
-import de.flapdoodle.apache.pivot.components.MainWindow;
+public class ColorPanel extends Panel {
 
+	public ColorPanel() {
+		getStyles().put("backgroundColor", randomColor());
+		getStyles().put("backgroundColor", randomColor());
+		setX(random(400));
+		setY(random(400));
+		setSize(100, 100);
+	}
 
-public class DemoWindow extends MainWindow {
+	static String randomColor() {
+		return new StringBuffer().append("#").append(singleHexValue()).append(singleHexValue()).append(singleHexValue()).append(
+				singleHexValue()).append(singleHexValue()).append(singleHexValue()).toString();
+	}
 
-	
-	public DemoWindow() {
-		getStyles().put("backgroundColor", "#808080");
-		Panel content = new Panel();
-		content.getStyles().put("backgroundColor", "#f0f0f0");
-		content.add(new ColorPanel());
-		content.add(new ColorPanel());
-		content.add(new ColorPanel());
-		content.add(new ColorPanel());
-		content.add(new ColorPanel());
-		setContent(content);
+	private static String singleHexValue() {
+		return Integer.toHexString(random(15));
+	}
+
+	static int random(int range) {
+		return (int) (Math.random() * range);
 	}
 }
