@@ -335,5 +335,11 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>de.flapdoodle.guava</groupId>
+			<artifactId>de.flapdoodle.guava</artifactId>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
+
     </dependencies>
 </project>

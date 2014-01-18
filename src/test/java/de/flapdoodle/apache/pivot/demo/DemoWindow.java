@@ -20,6 +20,7 @@ import org.apache.pivot.wtk.FillPane;
 import org.apache.pivot.wtk.Panel;
 
 import de.flapdoodle.apache.pivot.components.MainWindow;
+import de.flapdoodle.apache.pivot.layout.WeightPane;
 
 
 public class DemoWindow extends MainWindow {
@@ -27,7 +28,7 @@ public class DemoWindow extends MainWindow {
 	
 	public DemoWindow() {
 		getStyles().put("backgroundColor", "#808080");
-		Panel content = new Panel();
+		WeightPane content = new WeightPane();
 		content.getStyles().put("backgroundColor", "#f0f0f0");
 		content.add(new ColorPanel());
 		content.add(new ColorPanel());

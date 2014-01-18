@@ -18,6 +18,8 @@ package de.flapdoodle.apache.pivot.demo;
 
 import org.apache.pivot.wtk.Panel;
 
+import de.flapdoodle.apache.pivot.layout.WeightPane;
+
 public class ColorPanel extends Panel {
 
 	public ColorPanel() {
@@ -26,6 +28,9 @@ public class ColorPanel extends Panel {
 		setX(random(400));
 		setY(random(400));
 		setSize(100, 100);
+		WeightPane.setWeight(this, random(3)+1);
+		int f=random(3)+1;
+		setWidthLimits(f*10, (10-f)*10);
 	}
 
 	static String randomColor() {

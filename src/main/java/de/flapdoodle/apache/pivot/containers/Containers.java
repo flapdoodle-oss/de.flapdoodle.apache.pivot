@@ -16,13 +16,19 @@
  */
 package de.flapdoodle.apache.pivot.containers;
 
+import java.util.Collection;
+
 import org.apache.pivot.wtk.Component;
+import org.apache.pivot.wtk.Container;
+import org.apache.pivot.wtk.Limits;
+import org.apache.pivot.wtk.Orientation;
 
-import com.google.common.base.Optional;
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 
-import de.flapdoodle.apache.pivot.visitor.IVisit;
-import de.flapdoodle.apache.pivot.visitor.IVisitor;
-import de.flapdoodle.apache.pivot.visitor.Visitors;
+import de.flapdoodle.apache.pivot.components.Components;
+import de.flapdoodle.guava.Foldleft;
+import de.flapdoodle.guava.Folds;
 
 public abstract class Containers {
 
@@ -34,37 +40,53 @@ public abstract class Containers {
 		return new ParentMatcher<T>(containerType);
 	}
 
-	public static final class ParentMatcher<T> {
+	public static Iterable<Component> components(Container container) {
+		return new ContainerIterable(container);
+	}
 
-		private final Class<T> containerType;
+	public static ImmutableList<Component> componentsAsList(Container container) {
+		return ImmutableList.copyOf(components(container));
+	}
+	
+	public static int min(Collection<Component> components, Orientation orientation) {
+		return Folds.foldLeft(components, new ComponentSizeFold(Components.limits(orientation),new LimitMin()), 0);
+	}
 
-		public ParentMatcher(Class<T> containerType) {
-			this.containerType = containerType;
+	public static int max(Collection<Component> components, Orientation orientation) {
+		return Folds.foldLeft(components, new ComponentSizeFold(Components.limits(orientation),new LimitMax()), 0);
+	}
+
+	private static final class ComponentSizeFold<A> implements Foldleft<Component, Integer> {
+
+		private final Function<Component, A> _attributeTransformation;
+		private final Function<A, Integer> _attributeValueTransformation;
+
+		public ComponentSizeFold(Function<Component, A> attributeTransformation, Function<A, Integer> attributeValueTransformation) {
+			_attributeTransformation = attributeTransformation;
+			_attributeValueTransformation = attributeValueTransformation;
 		}
-
-		public Optional<T> of(Component start) {
-			return findParent(start, containerType);
+		
+		@Override
+		public Integer apply(Integer left, Component right) {
+			return left+_attributeValueTransformation.apply(_attributeTransformation.apply(right));
 		}
 	}
 
-	private static <T> Optional<T> findParent(Component start, Class<T> containerType) {
-		FirstMatchVisitor<T> visitor = new FirstMatchVisitor<T>();
-		Visitors.parents(start, containerType).traverse(visitor);
-		return visitor.match();
+	private static final class LimitMin implements Function<Limits, Integer> {
+
+		@Override
+		public Integer apply(Limits input) {
+			return input.minimum;
+		}
+		
 	}
 
-	private static final class FirstMatchVisitor<T> implements IVisitor<T> {
+	private static final class LimitMax implements Function<Limits, Integer> {
 
-		Optional<T> match = Optional.absent();
-
-		public void visit(IVisit visit, T element) {
-			match = Optional.of(element);
-			visit.abort();
+		@Override
+		public Integer apply(Limits input) {
+			return input.maximum;
 		}
-
-		public Optional<T> match() {
-			return match;
-		}
+		
 	}
-
 }
