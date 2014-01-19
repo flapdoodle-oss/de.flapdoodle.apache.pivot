@@ -16,13 +16,21 @@
  */
 package de.flapdoodle.apache.pivot.demo;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+
+import org.apache.pivot.wtk.Bounds;
+import org.apache.pivot.wtk.Component;
+import org.apache.pivot.wtk.Orientation;
 import org.apache.pivot.wtk.Panel;
+import org.apache.pivot.wtk.effects.Decorator;
+import org.apache.pivot.wtk.effects.FadeDecorator;
 
 import de.flapdoodle.apache.pivot.layout.WeightPane;
 
 public class ColorPanel extends Panel {
 
-	public ColorPanel() {
+	public ColorPanel(Orientation orientation) {
 		getStyles().put("backgroundColor", randomColor());
 		getStyles().put("backgroundColor", randomColor());
 		setX(random(400));
@@ -30,7 +38,15 @@ public class ColorPanel extends Panel {
 		setSize(100, 100);
 		WeightPane.setWeight(this, random(3)+1);
 		int f=random(3)+1;
-		setWidthLimits(f*10, (10-f)*10);
+		switch (orientation) {
+			case HORIZONTAL:
+				setWidthLimits(f*2, (10-f)*10);
+				break;
+			case VERTICAL:
+				setHeightLimits(f*2, (10-f)*10);
+				break;
+		}
+		getDecorators().add(new FadeDecorator(0.33f));
 	}
 
 	static String randomColor() {

@@ -80,7 +80,7 @@ public class WeightPane extends Container {
 	public Limits getWidthLimits() {
 		ImmutableList<Component> list = Containers.componentsAsList(this);
 		Limits ret = new Limits(Containers.min(list, Orientation.HORIZONTAL),Containers.max(list, Orientation.HORIZONTAL));
-		System.out.println("Width: "+ret);
+//		System.out.println("Width: "+ret);
 		return ret;
 	}
 	
@@ -88,7 +88,7 @@ public class WeightPane extends Container {
 	public Limits getHeightLimits() {
 		ImmutableList<Component> list = Containers.componentsAsList(this);
 		Limits ret = new Limits(Containers.min(list, Orientation.VERTICAL),Containers.max(list, Orientation.VERTICAL));
-		System.out.println("Height: "+ret);
+//		System.out.println("Height: "+ret);
 		return ret;
 	}
 

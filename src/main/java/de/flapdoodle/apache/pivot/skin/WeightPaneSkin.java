@@ -45,34 +45,45 @@ public class WeightPaneSkin extends ContainerSkin {
 	public void layout() {
 		WeightPane pane = (WeightPane)getComponent();
     int n = pane.getLength();
+		String prefix=pane.getName();
+		if (prefix==null) {
+			prefix="#"+pane.hashCode();
+		}
+		prefix=prefix+">";
 
     int width = getWidth();
     int height = getHeight();
+    int startX = pane.getX();
+    int startY = pane.getY();
+//    System.out.println(prefix+"pane("+startX+","+startY+","+width+"x"+height+")");
+    
     Orientation orientation = pane.getOrientation();
 
     ImmutableList<Component> components = Containers.componentsAsList(pane);
     
     ImmutableList<ComponentSizeAndWeight<Component>> sizes=WeightedSizes.componentSizes(components, orientation);
-    ImmutableList<ComponentAndSize<Component>> newSizes=WeightedSizes.resize(sizes,orientation==Orientation.HORIZONTAL ? width : height);
-    Map<Component, ComponentAndSize<Component>> asMap=Transformations.map(newSizes, new Function<ComponentAndSize<Component>, Component>() {
-    	@Override
-    	public Component apply(ComponentAndSize<Component> input) {
-    		return input.component();
-    	}
-    });
+//    System.out.println(prefix+"sizes="+sizes);
     
-    int offset=0;
-    for (Component c : components) {
-    	ComponentAndSize<Component> cs=asMap.get(c);
-    	Limits limits=Components.limits(orientation).apply(c);
+    ImmutableList<ComponentAndSize<Component>> newSizes=WeightedSizes.resize(sizes,orientation==Orientation.HORIZONTAL ? width : height);
+//    System.out.println(prefix+"resized="+newSizes);
+    
+  	Orientation invertedOrientation = orientation==Orientation.HORIZONTAL ? Orientation.VERTICAL : Orientation.HORIZONTAL;
+  	
+    int offset=0;//orientation==Orientation.HORIZONTAL ? startX : startY;
+    
+    for (ComponentAndSize<Component> cs : newSizes) {
+    	Component c=cs.component();
+			Limits limits=Components.limits(invertedOrientation).apply(c);
     	
     	switch (orientation) {
     		case HORIZONTAL:
-    			c.setLocation(offset,0);
+//    			System.out.println(prefix+limits.maximum+"?"+height+"->"+min(limits.maximum, height)+","+cs.size());
+    			c.setLocation(offset,0 /*startY*/);
     			c.setSize(cs.size(), min(limits.maximum, height));
     			break;
     		case VERTICAL:
-    			c.setLocation(0,offset);
+//    			System.out.println(prefix+limits.maximum+"?"+width+"->"+min(limits.maximum, width)+","+cs.size());
+    			c.setLocation(0 /*startX*/,offset);
     			c.setSize(min(limits.maximum, width),cs.size());
     			break;
     	}

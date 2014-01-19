@@ -110,7 +110,7 @@ public class WeightedSizesTest {
 	}
 
 	@Test
-	public void weightZeroMeansMin() {
+	public void smallWeightOutperformOtherIfTheyReachThereMax() {
 		ImmutableList<ComponentSizeAndWeight<String>> sizes=ImmutableList.<ComponentSizeAndWeight<String>>builder()
 				.add(entry("a",limits(10,100),1))
 				.add(entry("b",limits(20,100),100))
@@ -119,7 +119,22 @@ public class WeightedSizesTest {
 		ImmutableList<ComponentAndSize<String>> resized = WeightedSizes.resize(sizes, 210);
 		
 		assertEquals(3, resized.size());
-		assertEquals(10, withLabel("a", resized).size());
+		assertEquals(60, withLabel("a", resized).size());
+		assertEquals(100, withLabel("b", resized).size());
+		assertEquals(50, withLabel("c", resized).size());
+	}
+
+	@Test
+	public void limitsWithMaximumIsNotALimitAtAll() {
+		ImmutableList<ComponentSizeAndWeight<String>> sizes=ImmutableList.<ComponentSizeAndWeight<String>>builder()
+				.add(entry("a",limits(10,Integer.MAX_VALUE),1))
+				.add(entry("b",limits(20,100),100))
+				.add(entry("c",limits(30,50),100))
+				.build();
+		ImmutableList<ComponentAndSize<String>> resized = WeightedSizes.resize(sizes, 210);
+		
+		assertEquals(3, resized.size());
+		assertEquals(60, withLabel("a", resized).size());
 		assertEquals(100, withLabel("b", resized).size());
 		assertEquals(50, withLabel("c", resized).size());
 	}
