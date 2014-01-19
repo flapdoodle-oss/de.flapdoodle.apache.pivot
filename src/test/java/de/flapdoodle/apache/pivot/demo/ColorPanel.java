@@ -16,13 +16,18 @@
  */
 package de.flapdoodle.apache.pivot.demo;
 
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 
 import org.apache.pivot.wtk.Bounds;
 import org.apache.pivot.wtk.Component;
+import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.Orientation;
 import org.apache.pivot.wtk.Panel;
+import org.apache.pivot.wtk.effects.BlurDecorator;
 import org.apache.pivot.wtk.effects.Decorator;
 import org.apache.pivot.wtk.effects.FadeDecorator;
 
@@ -30,23 +35,40 @@ import de.flapdoodle.apache.pivot.layout.WeightPane;
 
 public class ColorPanel extends Panel {
 
+	private Label label;
+
 	public ColorPanel(Orientation orientation) {
 		getStyles().put("backgroundColor", randomColor());
 		getStyles().put("backgroundColor", randomColor());
-		setX(random(400));
-		setY(random(400));
-		setSize(100, 100);
-		WeightPane.setWeight(this, random(3)+1);
+		//setX(random(400));
+		//setY(random(400));
+		//setSize(100, 100);
+		int weight = random(5)+1;
+		WeightPane.setWeight(this, weight);
 		int f=random(3)+1;
 		switch (orientation) {
 			case HORIZONTAL:
-				setWidthLimits(f*2, (10-f)*10);
+				setWidthLimits(f*2, (10-f)*50);
 				break;
 			case VERTICAL:
-				setHeightLimits(f*2, (10-f)*10);
+				setHeightLimits(f*2, (10-f)*50);
 				break;
 		}
-		getDecorators().add(new FadeDecorator(0.33f));
+		//getDecorators().add(new BlurDecorator(2));
+		Label label = new Label("w("+weight+")");
+		label.getStyles().put("color", "#ffffff");
+		label.getStyles().put("font", new Font("Arial", Font.BOLD, 32));
+		label.setLocation(5, 5);
+		label.setSize(30, 30);
+		add(label);
+		
+		this.label=label;
+	}
+	
+	@Override
+	public void setSize(int width, int height) {
+		super.setSize(width, height);
+		label.setSize(width-5, height-5);
 	}
 
 	static String randomColor() {
