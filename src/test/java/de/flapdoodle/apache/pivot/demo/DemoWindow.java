@@ -37,12 +37,13 @@ public class DemoWindow extends MainWindow {
 		content.add(new ColorPanel(main));
 		content.add(new ColorPanel(main));
 		content.add(new ColorPanel(main));
-		content.add(new ColorPanel(main));
 		Orientation subOrient=Orientation.VERTICAL;
 		WeightPane sub = new WeightPane(subOrient);
 		sub.getStyles().put("backgroundColor", "#fff0f0");
-		WeightPane.setWeight(sub, 1);
+		WeightPane.setWeight(sub, 4);
 		sub.setName("sub");
+		sub.add(new ColorPanel(subOrient));
+		sub.add(new ColorPanel(subOrient));
 		sub.add(new ColorPanel(subOrient));
 		sub.add(new ColorPanel(subOrient));
 		sub.add(new ColorPanel(subOrient));

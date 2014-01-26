@@ -338,7 +338,7 @@
 		<dependency>
 			<groupId>de.flapdoodle.guava</groupId>
 			<artifactId>de.flapdoodle.guava</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2</version>
 		</dependency>
 
     </dependencies>

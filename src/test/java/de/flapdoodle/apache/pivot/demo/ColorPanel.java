@@ -45,7 +45,7 @@ public class ColorPanel extends Panel {
 		//setSize(100, 100);
 		int weight = random(5)+1;
 		WeightPane.setWeight(this, weight);
-		int f=random(3)+1;
+		int f=random(5)+1;
 		switch (orientation) {
 			case HORIZONTAL:
 				setWidthLimits(f*2, (10-f)*50);
